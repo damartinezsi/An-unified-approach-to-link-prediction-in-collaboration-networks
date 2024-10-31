@@ -1,35 +1,30 @@
 # An unified approach to link prediction in collaboration networks
 
-Este repositorio contiene el código y los archivos asociados al artículo **"Comparación de modelos tradicionales y de machine learning para la predicción de enlaces en grafos"**. En él, se exploran y comparan distintos enfoques, desde modelos estadísticos tradicionales hasta técnicas de machine learning, evaluando su precisión y eficiencia en la predicción de enlaces en redes complejas.
+This repository contains the code and associated files for the paper **"Comparison of Traditional and Machine Learning Models for Link Prediction in Graphs"**. It explores and compares various approaches, from traditional statistical models to machine learning techniques, assessing their accuracy and efficiency in predicting links in complex networks.
 
-## Contenido
+## Repository Structure
 
-- **Scripts y notebooks**: Implementación de los modelos y técnicas utilizadas en el estudio, incluyendo modelos estadísticos como ERGM y técnicas de machine learning como GCN y Word2Vec.
-- **Resultados**: Archivos de resultados, métricas de evaluación (AUC y tiempos de ejecución), y visualizaciones que permiten analizar el rendimiento de cada modelo en diferentes redes de colaboración académica.
-- **Datos**: Conjuntos de datos de redes utilizados en el análisis, como Astro-Ph, Cond-Mat, Gr-Qc, Hep-Ph, y Hep-Th.
+- **Code:** Implementation of the models and techniques used in the study, including statistical models such as ERGM and machine learning techniques like GCN and Word2Vec.
+- **Models:** Files with the fitted models.
+- **Data:** Network datasets used in the analysis, including Astro-Ph, Cond-Mat, Gr-Qc, Hep-Ph, and Hep-Th.
 
-## Requisitos
+## Requirements
 
-Para reproducir los experimentos, asegúrate de tener instalado:
+To reproduce the experiments, ensure you have:
 
-- Python 3.8 o superior
-- Librerías necesarias: `networkx`, `scikit-learn`, `pandas`, `numpy`, `matplotlib`, `torch` y `tensorflow` 
+- Python 3.8 or higher
+- Required libraries: `networkx`, `scikit-learn`, `pandas`, `numpy`, `matplotlib`, `torch` y `tensorflow` 
 
-## Ejecución
+## Execution
 
-1. Clonar este repositorio:
+1. Clone this repository:
 
    ```bash
    git clone https://github.com/damartinezsi/An-unified-approach-to-link-prediction-in-collaboration-networks.git
-   cd Comparacion-modelos-de-redes
+   cd An-unified-approach-to-link-prediction-in-collaboration-networks
 
-2. Ejecutar los notebooks en el directorio notebooks para replicar los experimentos y visualizar los resultados. En caso de no querer ajustar todos los modelos, es posible cargarlos direcatamente desde la carpeta "modelos".
+2. Run the notebooks in the `code` directory to replicate experiments and view results. To skip model fitting, models can be loaded directly from the "models" folder.
 
-## Estructura del repositorio
+## Contact
 
-- `Bases utilizadas/`: Conjuntos de datos de redes en formato txt. 
-- `Codigo/`: Jupyter notebook y scripts con los modelos ajustados en python y R.
-- `Modelos/`: Modelos GNC y Word2Vec ajustados para los diferentes conjuntos de datos.
-
-## Contacto
-Para dudas o comentarios sobre el código o el artículo, puede contactar al correo electrónico damartinezsi@unal.edu.co
+For questions or comments about the code or the paper, feel free to reach out at damartinezsi@unal.edu.co
