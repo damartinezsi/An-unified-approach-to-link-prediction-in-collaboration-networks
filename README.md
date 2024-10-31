@@ -5,9 +5,8 @@ This repository contains the code and associated files for the paper **"Comparis
 ## Repository Structure
 
 - **Code:** Implementation of the models and techniques used in the study, including statistical models such as ERGM and machine learning techniques like GCN and Word2Vec.
-- **Models:** Files with the fitted models.
 - **Data:** Network datasets used in the analysis, including Astro-Ph, Cond-Mat, Gr-Qc, Hep-Ph, and Hep-Th.
-
+- **Models:** Files with the fitted models.
 ## Requirements
 
 To reproduce the experiments, ensure you have:
