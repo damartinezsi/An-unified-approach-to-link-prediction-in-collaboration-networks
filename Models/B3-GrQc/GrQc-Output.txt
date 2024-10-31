@@ -1,0 +1,211 @@
+
+R version 4.4.1 (2024-06-14 ucrt) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R es un software libre y viene sin GARANTIA ALGUNA.
+Usted puede redistribuirlo bajo ciertas circunstancias.
+Escriba 'license()' o 'licence()' para detalles de distribucion.
+
+R es un proyecto colaborativo con muchos contribuyentes.
+Escriba 'contributors()' para obtener más información y
+'citation()' para saber cómo citar R o paquetes de R en publicaciones.
+
+Escriba 'demo()' para demostraciones, 'help()' para el sistema on-line de ayuda,
+o 'help.start()' para abrir el sistema de ayuda HTML con su navegador.
+Escriba 'q()' para salir de R.
+
+> # Librerías --------------------------------------------------------------------
+> suppressMessages(suppressWarnings(library("igraph")))
+> suppressMessages(suppressWarnings(library("ergm")))
+> suppressMessages(suppressWarnings(library("network")))
+> suppressMessages(suppressWarnings(library("intergraph")))
+> suppressMessages(suppressWarnings(library("doParallel")))
+> suppressMessages(suppressWarnings(library("pROC")))
+> suppressMessages(suppressWarnings(library("Rglpk")))
+> 
+> 
+> # Definimos el directorio de trabajo
+> setwd("~/Git Repositories/SNA")
+> 
+> 
+> # Definimos una Semilla
+> set.seed(777) 
+> 
+> 
+> # Importamos la base de datos --------------------------------------------------
+> 
+> # Directed graph (each unordered pair of nodes is saved once): CA-HepPh.txt 
+> # Collaboration network of Arxiv High Energy Physics category (there is an edge if authors coauthored at least one paper)
+> # Nodes: 12008 Edges: 237010
+> base <- read.delim("CA-GrQc.txt", comment.char="#")
+> 
+> 
+> # Renombramos las columnas
+> colnames(base) <- c("from", "to")
+> 
+> 
+> # Definimos la red como un objeto igraph
+> g <- igraph::graph_from_data_frame(d = base, directed = FALSE)
+> 
+> 
+> # Verificamos los atributos básicos de la red
+> igraph::ecount(g)  # 237.010
+[1] 28979
+> igraph::vcount(g)  # 12008
+[1] 5242
+> igraph::is_directed(g)  # False
+[1] FALSE
+> igraph::is_simple(g)    # False
+[1] FALSE
+> 
+> 
+> # Simplificamos la red
+> g <- simplify(g, remove.multiple = TRUE, remove.loops = TRUE)
+> 
+> 
+> # Guardamos el grafo como un objeto del tipo network
+> net <- asNetwork(g)
+> 
+> 
+> # Liberamos memoria RAM
+> rm(g, base)
+> gc()
+          used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells 2247453 120.1    4505308 240.7  2929075 156.5
+Vcells 4433239  33.9   10146329  77.5  6649589  50.8
+> 
+> 
+> # Ajustamos el modelo ERGM -----------------------------------------------------
+> 
+> 
+> # Modelo 
+> start_time <- Sys.time()
+> modelo_simple <- ergm(net ~ edges)
+Starting maximum pseudolikelihood estimation (MPLE):
+Obtaining the responsible dyads.
+Evaluating the predictor and response matrix.
+Maximizing the pseudolikelihood.
+Finished MPLE.
+Evaluating log-likelihood at the estimate. 
+> end_time <- Sys.time()
+> print(end_time - start_time)
+Time difference of 1.149484 secs
+> 
+> 
+> # Guardamos el modelo
+> save(modelo_simple, file = "ERGM_B3.RData")
+> 
+> 
+> # Simulamos redes a partir del modelo ajustado
+> start_time <- Sys.time()
+> num_sim <- 50
+> sim_nets <- simulate(modelo_simple, nsim = num_sim, output = "network", seed = 777)
+> end_time <- Sys.time()
+> print(end_time - start_time)
+Time difference of 4.04136 secs
+> 
+> 
+> # Obtenemos la matriz de adyacencia de la red observada
+> observed <- as.matrix.network(net)
+> 
+> 
+> # Inicializamos una matriz para acumular las simulaciones
+> predicted_prob <- matrix(0, nrow = network.size(net), ncol = network.size(net))
+> 
+> 
+> # Acumulamos las matrices de adyacencia simuladas
+> start_time <- Sys.time()
+> conteo = 1
+> for (i in 1:num_sim) {
++   print(conteo)
++   sim_mat <- as.matrix.network(sim_nets[[i]])
++   predicted_prob <- predicted_prob + sim_mat
++   conteo = conteo + 1
++ }
+[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5
+[1] 6
+[1] 7
+[1] 8
+[1] 9
+[1] 10
+[1] 11
+[1] 12
+[1] 13
+[1] 14
+[1] 15
+[1] 16
+[1] 17
+[1] 18
+[1] 19
+[1] 20
+[1] 21
+[1] 22
+[1] 23
+[1] 24
+[1] 25
+[1] 26
+[1] 27
+[1] 28
+[1] 29
+[1] 30
+[1] 31
+[1] 32
+[1] 33
+[1] 34
+[1] 35
+[1] 36
+[1] 37
+[1] 38
+[1] 39
+[1] 40
+[1] 41
+[1] 42
+[1] 43
+[1] 44
+[1] 45
+[1] 46
+[1] 47
+[1] 48
+[1] 49
+[1] 50
+> end_time <- Sys.time()
+> print(end_time - start_time)
+Time difference of 55.12804 mins
+> 
+> 
+> # Calculamos la probabilidad promedio de los enlaces
+> predicted_prob <- predicted_prob / num_sim
+> 
+> 
+> # Aplanamos las matrices para calcular el AUC
+> predicted_prob <- predicted_prob[upper.tri(predicted_prob)]
+> observed <- observed[upper.tri(observed)]
+> 
+> 
+> # Guardamos las probabilidades
+> write.csv(data.frame(valor = predicted_prob), file = "predict_GrQc.csv", row.names = FALSE)
+> write.csv(data.frame(valor = observed), file = "observed_GrQc.csv", row.names = FALSE)
+> 
+> 
+> rm(modelo_simple, net, sim_mat, sim_nets)
+> gc()
+           used  (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells  2185754 116.8   14902500  795.9  13509171  721.5
+Vcells 31864036 243.2  313901061 2394.9 389706179 2973.3
+> 
+> 
+> # Calculamos el AUC
+> roc_curve <- roc(observed, predicted_prob)
+Setting levels: control = 0, case = 1
+Setting direction: controls < cases
+> auc_value <- auc(roc_curve)
+> 
+> 
+> # Mostramos el valor del AUC
+> print(paste("AUC:", auc_value))
+[1] "AUC: 0.782648849460902"
