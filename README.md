@@ -20,7 +20,7 @@ Para reproducir los experimentos, asegúrate de tener instalado:
 1. Clonar este repositorio:
 
    ```bash
-   git clone https://github.com/damartinezsi/Comparacion-modelos-de-redes.git
+   git clone https://github.com/damartinezsi/An-unified-approach-to-link-prediction-in-collaboration-networks.git
    cd Comparacion-modelos-de-redes
 
 2. Ejecutar los notebooks en el directorio notebooks para replicar los experimentos y visualizar los resultados. En caso de no querer ajustar todos los modelos, es posible cargarlos direcatamente desde la carpeta "modelos".
