@@ -1,4 +1,4 @@
-# Comparación modelos de redes
+# An unified approach to link prediction in collaboration networks
 
 Este repositorio contiene el código y los archivos asociados al artículo **"Comparación de modelos tradicionales y de machine learning para la predicción de enlaces en grafos"**. En él, se exploran y comparan distintos enfoques, desde modelos estadísticos tradicionales hasta técnicas de machine learning, evaluando su precisión y eficiencia en la predicción de enlaces en redes complejas.
 
